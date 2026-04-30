@@ -1,0 +1,105 @@
+# AgentFlow
+
+**Hybrid Agent-Workflow Execution Framework for Industrial AI.**
+
+AgentFlow combines LLM agent reasoning with deterministic workflow execution to achieve 94% task completion with zero compliance violations — outperforming both pure agent and pure workflow approaches.
+
+[![CI](https://github.com/seastarbot/agentflow/actions/workflows/ci.yml/badge.svg)](https://github.com/seastarbot/agentflow/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    HybridOrchestrator                     │
+│  f(t) = f_W(f_A(t), C)                                  │
+├────────────────────────┬────────────────────────────────┤
+│    Agent Layer (f_A)    │    Workflow Layer (f_W)        │
+│  ┌──────────────────┐  │  ┌──────────────────────────┐  │
+│  │ Intent Resolution │  │  │ Business Rule Enforcement │  │
+│  │ Plan Generation   │  │  │ State Management         │  │
+│  │ Exception Handling│  │  │ Compensation & Rollback   │  │
+│  │ Learning          │  │  │ Compliance Logging        │  │
+│  └──────────────────┘  │  └──────────────────────────┘  │
+│  Non-deterministic     │  Deterministic                  │
+│  Flexible              │  Auditable                      │
+├────────────────────────┴────────────────────────────────┤
+│              AuditLogger · RuleEngine                    │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Quick Start
+
+```python
+from agentflow import AgentLayer, WorkflowEngine, HybridOrchestrator, Task
+
+orchestrator = HybridOrchestrator(agent=AgentLayer(), workflow_engine=WorkflowEngine())
+result = orchestrator.execute(Task(task_type="order", description="Process rush order"))
+print(result.status)  # TaskStatus.COMPLETED
+```
+
+## Installation
+
+```bash
+pip install agentflow
+```
+
+## Benchmark Results
+
+| Metric | Pure Agent | Pure Workflow | **Hybrid (AgentFlow)** |
+|--------|-----------|---------------|------------------------|
+| Task completion rate | 78.2% ± 1.4 | 91.3% ± 0.9 | **94.1% ± 0.7** |
+| Avg. processing time | 12.3 min | 8.1 min | **6.2 min** |
+| Compliance violations | 8.1% | 0.0% | **0.0%** |
+| Exception handling | 45.3% | 23.1% | **87.4%** |
+
+*Benchmark data from 3 industrial deployments over 18 months (24,228 total tasks).*
+
+## Core Components
+
+### AgentLayer
+LLM agent cognitive interface — handles intent resolution, plan generation, exception handling, and result interpretation.
+
+### WorkflowEngine
+Deterministic workflow execution — manages state, enforces business rules, handles compensation/rollback, and generates audit trails.
+
+### HybridOrchestrator
+The glue — orchestrates agent + workflow through the hybrid function: `f(t) = f_W(f_A(t), C)`.
+
+### AuditLogger
+Structured audit logging for compliance — JSONL format, thread-safe, supports compliance reports.
+
+### RuleEngine
+Business rule enforcement — configurable rules with handlers, supports threshold checks, required fields, and custom compliance functions.
+
+## Examples
+
+- [Manufacturing](examples/manufacturing.py) — Production order processing with quality checks
+- [Financial](examples/financial.py) — Regulatory report compliance
+- [Healthcare](examples/healthcare.py) — Patient intake automation
+
+## Why Hybrid?
+
+| Approach | Strength | Weakness |
+|----------|----------|----------|
+| Pure Agent | Flexible reasoning | Non-deterministic, no audit trail |
+| Pure Workflow | Reliable execution | Can't handle ambiguity or exceptions |
+| **Hybrid** | **Both** | **Requires orchestration** |
+
+The key insight: agents excel at the cognitive tasks (understanding intent, handling exceptions) while workflows excel at execution (enforcing rules, maintaining compliance). AgentFlow puts both to work.
+
+## Citation
+
+```bibtex
+@article{wei2026agentflow,
+  title={Agents Reason, Workflows Execute: Achieving 94\% Task Completion
+         with Zero Compliance Violations in Industrial AI Deployments},
+  author={Wei, Sun},
+  year={2026}
+}
+```
+
+## License
+
+MIT
